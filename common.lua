@@ -25,6 +25,12 @@ local function read_uint16(data, offset)
 	)
 end
 
+local function write_uint16(v)
+	local b1 = v % 256
+	local b2 = math.floor(v / 256)
+	return string.char(b1, b2)
+end
+
 return {
 	lfh_sig = string.char(80, 75, 3, 4),
     eocd_sig = string.char(80, 75, 5, 6),
@@ -33,5 +39,6 @@ return {
 	compression_flag_none = 0,
     compare_bytes = compare_bytes,
     read_uint16 = read_uint16,
+	write_uint16 = write_uint16,
     read_uint32 = read_uint32
 }

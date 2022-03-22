@@ -4,5 +4,6 @@ local crc32 = loadfile(MP.."/crc32.lua")()
 
 mtzip = {
     crc32 = crc32,
-    unzip = loadfile(MP.."/unzip.lua")(common, crc32)
+    unzip = loadfile(MP.."/unzip.lua")(common, crc32),
+    zip = loadfile(MP.."/zip.lua")(common, crc32)
 }
