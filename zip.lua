@@ -81,7 +81,7 @@ local function write_cd(file, filename, header_data)
     file:write(common.write_uint16(#filename)) -- File name length (n)
     file:write(string.char(0x00, 0x00)) -- Extra field length (m)
     file:write(string.char(0x00, 0x00)) -- File comment length (k)
-    file:write(string.char(0x01, 0x00)) -- Disk number where file starts
+    file:write(string.char(0x00, 0x00)) -- Disk number where file starts
     file:write(string.char(0x00, 0x00)) -- Internal file attributes
     file:write(string.char(0x00, 0x00, 0x00, 0x00)) -- External file attributes
     file:write(common.write_uint32(header_data.offset)) -- Relative offset of local file header
