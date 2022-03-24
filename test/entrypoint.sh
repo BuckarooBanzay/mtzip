@@ -19,10 +19,13 @@ minetestserver --config /minetest.conf
 echo "Checking generated zip file"
 
 ls -lha ${world_dir}
+test -f ${world_dir}/stage1.zip
 
 hexdump -Cv ${world_dir}/stage1.zip
 unzip -l ${world_dir}/stage1.zip
 
 unzip ${world_dir}/stage1.zip
 
-test "" == "x" || { echo "no match"; exit 1 }
+test -f test.txt
+contents=$(cat test.txt)
+test "${contents}" == "abcdefghijklmnopqrstuvwxyz"

@@ -59,7 +59,7 @@ local function write_uint32(v)
 	local b1 = bitand(v, 0xFF)
 	local b2 = bitand( rshift(v, 8), 0xFF )
 	local b3 = bitand( rshift(v, 16), 0xFF )
-	local b4 = bitand( rshift(v, 32), 0xFF )
+	local b4 = bitand( rshift(v, 24), 0xFF )
 	return string.char(b1, b2, b3, b4)
 end
 

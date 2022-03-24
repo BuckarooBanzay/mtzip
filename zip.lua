@@ -19,7 +19,7 @@ local function write_file(file, filename, data)
     local crc = crc32(data)
 
     local uncompressed_size = #data
-    if uncompressed_size > 10 then
+    if uncompressed_size > 100 then
         compressed = true
         data = minetest.compress(data, "deflate")
     end
@@ -84,7 +84,7 @@ local function write_cd(file, filename, header_data)
     file:write(string.char(0x00, 0x00)) -- Disk number where file starts
     file:write(string.char(0x00, 0x00)) -- Internal file attributes
     file:write(string.char(0x00, 0x00, 0x00, 0x00)) -- External file attributes
-    file:write(common.write_uint32(header_data.offset)) -- Relative offset of local file header
+    file:write(common.write_uint32(header_data.offset+0)) -- Relative offset of local file header
     file:write(filename)
 
     return 46 + #filename
