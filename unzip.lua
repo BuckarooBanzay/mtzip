@@ -50,6 +50,8 @@ local function read_cd(data, offset)
 		uncompressed_size = common.read_uint32(data, offset+24),
 		file_offset = common.read_uint32(data, offset+42),
 		name = data:sub(offset+46+1, offset+46+name_len),
+        extra_len = extra_len,
+        comment_len = comment_len,
 		header_len = 46+name_len+extra_len+comment_len
 	}
 end
@@ -113,6 +115,11 @@ function UnzippedFile:get(filename, verify)
     local data = self.file:read(cd.compressed_size)
 
     if header.compression == common.compression_flag_deflate then
+        print("len = " .. #data)
+        for i=1,20 do
+            print(i .. " = " .. string.format("0x%x", string.byte(data, i)))
+        end
+
         data = minetest.decompress(data, "deflate")
     elseif header.compression ~= common.compression_flag_none then
         return nil, "unsupported compression type: " .. header.compression

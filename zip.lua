@@ -19,7 +19,7 @@ local function write_file(file, filename, data)
     local crc = crc32(data)
 
     local uncompressed_size = #data
-    if uncompressed_size > 100 then
+    if uncompressed_size > 10 then
         compressed = true
         data = minetest.compress(data, "deflate")
     end
