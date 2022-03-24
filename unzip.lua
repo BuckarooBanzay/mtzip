@@ -1,5 +1,6 @@
 local common, crc32 = ...
 
+
 -- Local file header
 local function read_local_file_header(data, offset)
     if not common.compare_bytes(data, offset, common.lfh_sig, 0, 4) then

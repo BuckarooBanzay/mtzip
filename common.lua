@@ -31,6 +31,47 @@ local function write_uint16(v)
 	return string.char(b1, b2)
 end
 
+local function rshift(x, by)
+    return math.floor(x / 2 ^ by)
+end
+
+local function lshift(x, by)
+	return x * 2 ^ by
+end
+
+local function bitand(a, b)
+    local result = 0
+    local bitval = 1
+    while a > 0 and b > 0 do
+      if a % 2 == 1 and b % 2 == 1 then -- test the rightmost bits
+          result = result + bitval      -- set the current bit
+      end
+      bitval = bitval * 2 -- shift left
+      a = math.floor(a/2) -- shift right
+      b = math.floor(b/2)
+    end
+    return result
+end
+
+
+local function fromDosTime(date, time)
+	return {
+		year = rshift(date, 9) + 1980,
+		month = bitand( rshift(date, 5), 0x0F ),
+		day = bitand(date, 0x1F),
+		hour = rshift(time, 11),
+		min = bitand( rshift(time, 5), 0x3F ),
+		sec = bitand(time, 0x1F) * 2
+	}
+end
+
+local function toDosTime(o)
+	local date = o.day + lshift(o.month, 5) + lshift(o.year - 1980, 9)
+	local time = (o.sec / 2) + lshift(o.min, 5) + lshift(o.hour, 11)
+
+	return date, time
+end
+
 return {
 	lfh_sig = string.char(80, 75, 3, 4),
     eocd_sig = string.char(80, 75, 5, 6),
@@ -40,5 +81,7 @@ return {
     compare_bytes = compare_bytes,
     read_uint16 = read_uint16,
 	write_uint16 = write_uint16,
-    read_uint32 = read_uint32
+    read_uint32 = read_uint32,
+	fromDosTime = fromDosTime,
+	toDosTime = toDosTime
 }
