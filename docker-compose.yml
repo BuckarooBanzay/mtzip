@@ -1,0 +1,14 @@
+version: "3.6"
+
+services:
+ test:
+  build: ./test
+  user: root
+  volumes:
+    - "./:/root/.minetest/worlds/world/worldmods/mtzip/"
+    - "world:/root/.minetest/worlds/world"
+  ports:
+    - "30000:30000/udp"
+
+volumes:
+  world: {}
