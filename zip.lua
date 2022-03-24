@@ -22,6 +22,8 @@ local function write_file(file, filename, data)
     if uncompressed_size > 10 then
         compressed = true
         data = minetest.compress(data, "deflate")
+        -- strip zlib header
+        data = string.sub(data, 3)
     end
     local compressed_size = #data
     file:write(common.lfh_sig)

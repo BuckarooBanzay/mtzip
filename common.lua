@@ -86,6 +86,7 @@ return {
 	lfh_sig = string.char(80, 75, 3, 4),
     eocd_sig = string.char(80, 75, 5, 6),
     cd_sig = string.char(80, 75, 1, 2),
+	zlib_header = string.char(0x78, 0xDA),
 	compression_flag_deflate = 8,
 	compression_flag_none = 0,
     compare_bytes = compare_bytes,

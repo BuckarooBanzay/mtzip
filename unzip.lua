@@ -115,12 +115,7 @@ function UnzippedFile:get(filename, verify)
     local data = self.file:read(cd.compressed_size)
 
     if header.compression == common.compression_flag_deflate then
-        print("len = " .. #data)
-        for i=1,20 do
-            print(i .. " = " .. string.format("0x%x", string.byte(data, i)))
-        end
-
-        data = minetest.decompress(data, "deflate")
+        data = minetest.decompress(common.zlib_header .. data, "deflate")
     elseif header.compression ~= common.compression_flag_none then
         return nil, "unsupported compression type: " .. header.compression
     end
