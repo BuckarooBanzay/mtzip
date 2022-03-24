@@ -31,6 +31,7 @@ local function write_uint16(v)
 	return string.char(b1, b2)
 end
 
+-- https://gist.github.com/mebens/938502
 local function rshift(x, by)
     return math.floor(x / 2 ^ by)
 end
@@ -39,6 +40,7 @@ local function lshift(x, by)
 	return x * 2 ^ by
 end
 
+-- https://stackoverflow.com/a/32387452
 local function bitand(a, b)
     local result = 0
     local bitval = 1
