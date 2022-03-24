@@ -9,22 +9,6 @@ local function compare_bytes(b1, o1, b2, o2, len)
 	return true
 end
 
-local function read_uint32(data, offset)
-	return (
-		string.byte(data,1+offset) +
-		(string.byte(data,2+offset) * 256) +
-		(string.byte(data,3+offset) * 256 * 256) +
-		(string.byte(data,4+offset) * 256 * 256 * 256)
-	)
-end
-
-local function read_uint16(data, offset)
-	return (
-		string.byte(data,1+offset) +
-		(string.byte(data,2+offset) * 256)
-	)
-end
-
 -- https://gist.github.com/mebens/938502
 local function rshift(x, by)
     return math.floor(x / 2 ^ by)
@@ -32,6 +16,22 @@ end
 
 local function lshift(x, by)
 	return x * 2 ^ by
+end
+
+local function read_uint32(data, offset)
+	return (
+		string.byte(data,1+offset) +
+		lshift(string.byte(data,2+offset), 8) +
+		lshift(string.byte(data,3+offset), 16) +
+		lshift(string.byte(data,4+offset), 24)
+	)
+end
+
+local function read_uint16(data, offset)
+	return (
+		string.byte(data,1+offset) +
+		lshift(string.byte(data,2+offset), 8)
+	)
 end
 
 -- https://stackoverflow.com/a/32387452
