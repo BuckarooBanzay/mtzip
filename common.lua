@@ -55,7 +55,7 @@ local function bitand(a, b)
     return result
 end
 
-
+-- https://cs.opensource.google/go/go/+/master:src/archive/zip/struct.go;l=222-246;drc=master
 local function fromDosTime(date, time)
 	return {
 		year = rshift(date, 9) + 1980,
