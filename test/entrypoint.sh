@@ -20,4 +20,9 @@ echo "Checking generated zip file"
 
 ls -lha ${world_dir}
 
+hexdump -Cv ${world_dir}/stage1.zip
 unzip -l ${world_dir}/stage1.zip
+
+unzip ${world_dir}/stage1.zip
+
+test "" == "x" || { echo "no match"; exit 1 }

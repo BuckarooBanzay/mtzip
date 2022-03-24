@@ -25,12 +25,6 @@ local function read_uint16(data, offset)
 	)
 end
 
-local function write_uint16(v)
-	local b1 = v % 256
-	local b2 = math.floor(v / 256)
-	return string.char(b1, b2)
-end
-
 -- https://gist.github.com/mebens/938502
 local function rshift(x, by)
     return math.floor(x / 2 ^ by)
@@ -53,6 +47,20 @@ local function bitand(a, b)
       b = math.floor(b/2)
     end
     return result
+end
+
+local function write_uint16(v)
+	local b1 = bitand(v, 0xFF)
+	local b2 = bitand( rshift(v, 8), 0xFF )
+	return string.char(b1, b2)
+end
+
+local function write_uint32(v)
+	local b1 = bitand(v, 0xFF)
+	local b2 = bitand( rshift(v, 8), 0xFF )
+	local b3 = bitand( rshift(v, 16), 0xFF )
+	local b4 = bitand( rshift(v, 32), 0xFF )
+	return string.char(b1, b2, b3, b4)
 end
 
 -- https://cs.opensource.google/go/go/+/master:src/archive/zip/struct.go;l=222-246;drc=master
@@ -84,6 +92,7 @@ return {
     read_uint16 = read_uint16,
 	write_uint16 = write_uint16,
     read_uint32 = read_uint32,
+	write_uint32 = write_uint32,
 	fromDosTime = fromDosTime,
 	toDosTime = toDosTime
 }
