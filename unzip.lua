@@ -121,7 +121,7 @@ function UnzippedFile:get(filename, verify)
     if verify then
         local crc = crc32(data)
         if crc ~= cd.crc32 then
-            return nil, "checksum mismatch, calculated: '"..crc.."' epxected: '"..cd.crc32.."'"
+            return nil, "checksum mismatch, calculated: '"..crc.."' expected: '"..cd.crc32.."'"
         end
     end
 
