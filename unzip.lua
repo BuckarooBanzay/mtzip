@@ -4,11 +4,11 @@ local common, crc32 = ...
 -- Local file header
 local function read_local_file_header(data, offset)
     if not common.compare_bytes(data, offset, common.lfh_sig, 0, 4) then
-		return nil, "invalid local file header signature"
-	end
+        return nil, "invalid local file header signature"
+    end
 
     local name_len = common.read_uint16(data, offset+26)
-	local extra_len = common.read_uint16(data, offset+28)
+    local extra_len = common.read_uint16(data, offset+28)
 
     return {
         header_len = 30+name_len+extra_len,
@@ -18,43 +18,43 @@ end
 
 -- End of central directory record (EOCD)
 local function read_eocd(data, offset)
-	if not common.compare_bytes(data, offset, common.eocd_sig, 0, 4) then
-		return nil, "invalid eocd signature"
-	end
+    if not common.compare_bytes(data, offset, common.eocd_sig, 0, 4) then
+        return nil, "invalid eocd signature"
+    end
 
-	return {
-		cd_size = common.read_uint32(data, offset+12),
-		cd_offset = common.read_uint32(data, offset+16),
-		cd_count = common.read_uint16(data, offset+8)
-	}
+    return {
+        cd_size = common.read_uint32(data, offset+12),
+        cd_offset = common.read_uint32(data, offset+16),
+        cd_count = common.read_uint16(data, offset+8)
+    }
 end
 
 -- Central directory file header
 local function read_cd(data, offset)
-	if not common.compare_bytes(data, offset, common.cd_sig, 0, 4) then
-		return nil, "invalid cd signature"
-	end
+    if not common.compare_bytes(data, offset, common.cd_sig, 0, 4) then
+        return nil, "invalid cd signature"
+    end
 
     local time = common.read_uint16(data, offset+12)
     local date = common.read_uint16(data, offset+14)
-	local name_len = common.read_uint16(data, offset+28)
-	local extra_len = common.read_uint16(data, offset+30)
-	local comment_len = common.read_uint16(data, offset+32)
+    local name_len = common.read_uint16(data, offset+28)
+    local extra_len = common.read_uint16(data, offset+30)
+    local comment_len = common.read_uint16(data, offset+32)
 
-	return {
-		version = common.read_uint16(data, offset+4),
-		version_needed = common.read_uint16(data, offset+6),
-		compression = common.read_uint16(data, offset+10),
+    return {
+        version = common.read_uint16(data, offset+4),
+        version_needed = common.read_uint16(data, offset+6),
+        compression = common.read_uint16(data, offset+10),
         mtime = common.fromDosTime(date, time),
-		crc32 = common.read_uint32(data, offset+16),
-		compressed_size = common.read_uint32(data, offset+20),
-		uncompressed_size = common.read_uint32(data, offset+24),
-		file_offset = common.read_uint32(data, offset+42),
-		name = data:sub(offset+46+1, offset+46+name_len),
+        crc32 = common.read_uint32(data, offset+16),
+        compressed_size = common.read_uint32(data, offset+20),
+        uncompressed_size = common.read_uint32(data, offset+24),
+        file_offset = common.read_uint32(data, offset+42),
+        name = data:sub(offset+46+1, offset+46+name_len),
         extra_len = extra_len,
         comment_len = comment_len,
-		header_len = 46+name_len+extra_len+comment_len
-	}
+        header_len = 46+name_len+extra_len+comment_len
+    }
 end
 
 local UnzippedFile = {}
