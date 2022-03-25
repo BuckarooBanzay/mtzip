@@ -35,6 +35,8 @@ local function read_cd(data, offset)
 		return nil, "invalid cd signature"
 	end
 
+    local time = common.read_uint16(data, offset+12)
+    local date = common.read_uint16(data, offset+14)
 	local name_len = common.read_uint16(data, offset+28)
 	local extra_len = common.read_uint16(data, offset+30)
 	local comment_len = common.read_uint16(data, offset+32)
@@ -43,8 +45,7 @@ local function read_cd(data, offset)
 		version = common.read_uint16(data, offset+4),
 		version_needed = common.read_uint16(data, offset+6),
 		compression = common.read_uint16(data, offset+10),
-		mtime = common.read_uint16(data, offset+12),
-		mdate = common.read_uint16(data, offset+14),
+        mtime = common.fromDosTime(date, time),
 		crc32 = common.read_uint32(data, offset+16),
 		compressed_size = common.read_uint32(data, offset+20),
 		uncompressed_size = common.read_uint32(data, offset+24),
