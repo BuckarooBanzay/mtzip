@@ -51,7 +51,7 @@ cd = {
     compressed_size = 0,
     uncompressed_size = 0,
     name = "",
-    mtime = os.date(),
+    mtime = os.date("*t"),
     crc = 123456
 }
 
