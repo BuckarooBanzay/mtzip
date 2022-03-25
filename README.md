@@ -84,6 +84,10 @@ local mtzip = bootstrap(MP)
 -- do stuff with "mtzip.zip" or "mtzip.unzip"
 ```
 
+# Further reading
+
+* https://en.wikipedia.org/wiki/ZIP_(file_format)
+
 # License
 
 * `crc32.lua` zlib
