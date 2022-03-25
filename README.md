@@ -86,4 +86,5 @@ local mtzip = bootstrap(MP)
 
 # License
 
-* Code: MIT
+* `crc32.lua` zlib
+* Everything else: MIT
