@@ -61,6 +61,9 @@ local UnzippedFile = {}
 local UnzippedFile_mt = { __index = UnzippedFile }
 
 local function unzip(file)
+    if not file then
+        return nil, "file is nil"
+    end
     local size = file:seek("end")
     file:seek("set", size - 22) -- expects the comment-length to be 0
     local data = file:read(22)
