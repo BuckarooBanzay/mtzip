@@ -11,7 +11,7 @@ end
 
 -- https://gist.github.com/mebens/938502
 local function rshift(x, by)
-    return math.floor(x / 2 ^ by)
+	return math.floor(x / 2 ^ by)
 end
 
 local function lshift(x, by)
@@ -36,17 +36,17 @@ end
 
 -- https://stackoverflow.com/a/32387452
 local function bitand(a, b)
-    local result = 0
-    local bitval = 1
-    while a > 0 and b > 0 do
-      if a % 2 == 1 and b % 2 == 1 then -- test the rightmost bits
-          result = result + bitval      -- set the current bit
-      end
-      bitval = bitval * 2 -- shift left
-      a = math.floor(a/2) -- shift right
-      b = math.floor(b/2)
-    end
-    return result
+	local result = 0
+	local bitval = 1
+	while a > 0 and b > 0 do
+	  if a % 2 == 1 and b % 2 == 1 then -- test the rightmost bits
+		  result = result + bitval      -- set the current bit
+	  end
+	  bitval = bitval * 2 -- shift left
+	  a = math.floor(a/2) -- shift right
+	  b = math.floor(b/2)
+	end
+	return result
 end
 
 local function write_uint16(v)
@@ -84,15 +84,15 @@ end
 
 return {
 	lfh_sig = string.char(80, 75, 3, 4),
-    eocd_sig = string.char(80, 75, 5, 6),
-    cd_sig = string.char(80, 75, 1, 2),
+	eocd_sig = string.char(80, 75, 5, 6),
+	cd_sig = string.char(80, 75, 1, 2),
 	zlib_header = string.char(0x78, 0xDA),
 	compression_flag_deflate = 8,
 	compression_flag_none = 0,
-    compare_bytes = compare_bytes,
-    read_uint16 = read_uint16,
+	compare_bytes = compare_bytes,
+	read_uint16 = read_uint16,
 	write_uint16 = write_uint16,
-    read_uint32 = read_uint32,
+	read_uint32 = read_uint32,
 	write_uint32 = write_uint32,
 	fromDosTime = fromDosTime,
 	toDosTime = toDosTime

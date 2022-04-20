@@ -12,8 +12,8 @@ describe("mtzip.crc32", function()
 	end)
 
 	it("creates valid checksums", function()
-        local crc = mtzip.crc32("teststr")
-        assert.equals(615670416, crc)
+		local crc = mtzip.crc32("teststr")
+		assert.equals(615670416, crc)
 	end)
 end)
 

@@ -11,7 +11,7 @@ describe("mtzip.zip", function()
 		assert.equals("function", type(mtzip.zip))
 	end)
 
-    it("creates an archive", function()
+	it("creates an archive", function()
 		local f = io.open("spec/tmp.zip", "w")
 		assert.not_nil(f)
 
@@ -19,7 +19,7 @@ describe("mtzip.zip", function()
 		assert.not_nil(z)
 
 		-- TODO: larger size does not work without minetest.compress/uncompress
-        z:add("test.txt", "test123")
-        z:close()
-    end)
+		z:add("test.txt", "test123")
+		z:close()
+	end)
 end)

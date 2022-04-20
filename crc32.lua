@@ -11,11 +11,11 @@ local function Xor8(a, b)
 		fact = fact / 2
 	end
 	while fact >= 1 do
-        ret = ret + (((a >= fact or b >= fact)
+		ret = ret + (((a >= fact or b >= fact)
 			and (a < fact or b < fact)) and fact or 0)
-        a = a - ((a >= fact) and fact or 0)
-        b = b - ((b >= fact) and fact or 0)
-	    fact = fact / 2
+		a = a - ((a >= fact) and fact or 0)
+		b = b - ((b >= fact) and fact or 0)
+		fact = fact / 2
 	end
 	return ret
 end
@@ -103,33 +103,33 @@ return function(str, init_value)
 	if not _xor8_table then
 		GenerateXorTable()
 	end
-    -- The value of bytes of crc32
+	-- The value of bytes of crc32
 	-- crc0 is the least significant byte
 	-- crc3 is the most significant byte
-    local crc0 = crc % 256
-    crc = (crc - crc0) / 256
-    local crc1 = crc % 256
-    crc = (crc - crc1) / 256
-    local crc2 = crc % 256
-    local crc3 = (crc - crc2) / 256
+	local crc0 = crc % 256
+	crc = (crc - crc0) / 256
+	local crc1 = crc % 256
+	crc = (crc - crc1) / 256
+	local crc2 = crc % 256
+	local crc3 = (crc - crc2) / 256
 
 	local _xor_vs_255 = _xor8_table[255]
 	crc0 = _xor_vs_255[crc0]
 	crc1 = _xor_vs_255[crc1]
 	crc2 = _xor_vs_255[crc2]
 	crc3 = _xor_vs_255[crc3]
-    for i=1, #str do
+	for i=1, #str do
 		local byte = string_byte(str, i)
 		local k = _xor8_table[crc0][byte]
 		crc0 = _xor8_table[_crc_table0[k] ][crc1]
 		crc1 = _xor8_table[_crc_table1[k] ][crc2]
 		crc2 = _xor8_table[_crc_table2[k] ][crc3]
 		crc3 = _crc_table3[k]
-    end
+	end
 	crc0 = _xor_vs_255[crc0]
 	crc1 = _xor_vs_255[crc1]
 	crc2 = _xor_vs_255[crc2]
 	crc3 = _xor_vs_255[crc3]
-    crc = crc0 + crc1*256 + crc2*65536 + crc3*16777216
-    return crc
+	crc = crc0 + crc1*256 + crc2*65536 + crc3*16777216
+	return crc
 end
