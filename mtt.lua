@@ -17,7 +17,7 @@ mtt.register("creates valid checksums", function(callback)
 end)
 
 mtt.register("reading a simple zip file", function(callback)
-    local filename = minetest.get_modpath("mtzip") .. "/spec/out2.zip"
+    local filename = minetest.get_modpath("mtzip") .. "/test/out2.zip"
     local f = io.open(filename)
     local z = mtzip.unzip(f)
     local data = z:get("crc32.lua", true)
@@ -27,7 +27,7 @@ mtt.register("reading a simple zip file", function(callback)
 end)
 
 mtt.register("reading a bx-exported zip file", function(callback)
-    local filename = minetest.get_modpath("mtzip") .. "/spec/scifi_lamp_small.zip"
+    local filename = minetest.get_modpath("mtzip") .. "/test/scifi_lamp_small.zip"
     local f = io.open(filename)
     local z = mtzip.unzip(f)
     assert(z:get_entry("schema.json") ~= nil, "schema.json not found")
