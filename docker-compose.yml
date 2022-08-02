@@ -9,7 +9,6 @@ services:
   user: root
   volumes:
     - "./:/root/.minetest/worlds/world/worldmods/mtzip/"
-    - "./test/mod:/root/.minetest/worlds/world/worldmods/mtzip_test"
     - "./test/minetest.conf:/minetest.conf"
     - "./test/entrypoint.sh:/entrypoint.sh"
     - "world:/root/.minetest/worlds/world"

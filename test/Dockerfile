@@ -4,4 +4,8 @@ FROM registry.gitlab.com/minetest/minetest/server:${ENGINE_VERSION}
 USER root
 RUN apk add zip
 
+RUN apk add zip git &&\
+    mkdir -p /root/.minetest/worlds/world/worldmods/ &&\
+    git clone https://github.com/BuckarooBanzay/mtt /root/.minetest/worlds/world/worldmods/mtt
+
 ENTRYPOINT /entrypoint.sh
