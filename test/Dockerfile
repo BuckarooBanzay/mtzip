@@ -6,6 +6,8 @@ RUN apk add zip
 
 RUN apk add zip git &&\
     mkdir -p /root/.minetest/worlds/world/worldmods/ &&\
-    git clone https://github.com/BuckarooBanzay/mtt /root/.minetest/worlds/world/worldmods/mtt
+    cd /root/.minetest/worlds/world/worldmods/ &&\
+    git clone https://github.com/BuckarooBanzay/mtt &&\
+    git clone https://github.com/appgurueu/strictest
 
 ENTRYPOINT /entrypoint.sh
