@@ -31,6 +31,8 @@ z:add("test.txt", "test123")
 
 -- close and finalize the zip file
 z:close()
+-- close the file (flush pending changes)
+f:close()
 ```
 
 Reading:
