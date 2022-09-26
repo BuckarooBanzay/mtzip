@@ -2,10 +2,7 @@ version: "3.6"
 
 services:
  test:
-  build:
-   context: ./test
-   args:
-    ENGINE_VERSION: ${ENGINE_VERSION:-5.5.0}
+  build: ./test
   user: root
   volumes:
     - "./:/root/.minetest/worlds/world/worldmods/mtzip/"
