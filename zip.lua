@@ -5,7 +5,6 @@ local ZippedFile_mt = { __index = ZippedFile }
 
 local function zip(file)
 	local self = {
-		entries = {},
 		headers = {},
 		file = file
 	}
@@ -104,7 +103,6 @@ local function write_eocd(file, count, offset, cd_size)
 end
 
 function ZippedFile:add(filename, data)
-	self.entries[filename] = data
 	self.headers[filename] = write_file(self.file, filename, data)
 end
 
