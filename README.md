@@ -23,7 +23,7 @@ Disclaimer:
 Writing:
 ```lua
 -- create a new zip file in the world directory
-local f = io.open(minetest.get_worldpath() .. "/tmp.zip", "w")
+local f = io.open(minetest.get_worldpath() .. "/tmp.zip", "wb")
 local z = mtzip.zip(f)
 
 -- add a sample file with dummy content
@@ -38,7 +38,7 @@ f:close()
 Reading:
 ```lua
 -- open a file in the world directory (can also be somewhere in the mod itself)
-local f = io.open(minetest.get_worldpath() .. "/tmp.zip")
+local f = io.open(minetest.get_worldpath() .. "/tmp.zip", "rb")
 local z, err_msg = mtzip.unzip(f)
 if not z then
     -- error-handling

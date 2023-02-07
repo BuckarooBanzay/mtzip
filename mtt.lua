@@ -18,7 +18,7 @@ end)
 
 mtt.register("reading a simple zip file", function(callback)
     local filename = minetest.get_modpath("mtzip") .. "/test/out2.zip"
-    local f = io.open(filename)
+    local f = io.open(filename, "rb")
     local z = mtzip.unzip(f)
     local data = z:get("crc32.lua", true)
     f:close()
@@ -28,7 +28,7 @@ end)
 
 mtt.register("reading a bx-exported zip file", function(callback)
     local filename = minetest.get_modpath("mtzip") .. "/test/scifi_lamp_small.zip"
-    local f = io.open(filename)
+    local f = io.open(filename, "rb")
     local z = mtzip.unzip(f)
     assert(z:get_entry("schema.json") ~= nil, "schema.json not found")
     assert(z:get_entry("schemapart_0_0_0.json") ~= nil, "schemapart_0_0_0.json not found")
@@ -40,7 +40,7 @@ mtt.register("reading a bx-exported zip file", function(callback)
 end)
 
 mtt.register("creating a zip file", function(callback)
-    local f = io.open(minetest.get_worldpath() .. "/stage1.zip", "w")
+    local f = io.open(minetest.get_worldpath() .. "/stage1.zip", "wb")
     local z = mtzip.zip(f)
     z:add("test.txt", "abcdefghijklmnopqrstuvwxyz")
     z:close()
