@@ -1,0 +1,21 @@
+name: coverage
+
+on: [push, pull_request]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: test
+      run: |
+        docker-compose up --exit-code-from test
+        docker cp mtzip_test_1:/var/lib/minetest/luacov.report.out .
+        sed -i 's#/root/.minetest/worlds/world/worldmods/mtzip/##g' luacov.report.out
+    - name: Coveralls
+      uses: coverallsapp/github-action@v1
+      with:
+        path-to-lcov: "luacov.report.out"
