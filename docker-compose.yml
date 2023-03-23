@@ -9,8 +9,7 @@ services:
     - "./test/minetest.conf:/minetest.conf"
     - "./test/entrypoint.sh:/entrypoint.sh"
     - "world:/root/.minetest/worlds/world"
-  ports:
-    - "30000:30000/udp"
+    - "./coverage:/var/lib/minetest"
 
 volumes:
   world: {}
