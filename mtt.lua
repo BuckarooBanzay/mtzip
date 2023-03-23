@@ -35,6 +35,10 @@ mtt.register("reading a bx-exported zip file", function(callback)
     local data = z:get("mods.json", true)
     local mods = minetest.parse_json(data)
     assert(#mods == 1, "mods.json list count wrong")
+
+    local list = z:list()
+    assert(#list == 3)
+
     f:close()
     callback()
 end)
