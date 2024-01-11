@@ -1,9 +1,8 @@
-local common, crc32 = ...
 
 local ZippedFile = {}
 local ZippedFile_mt = { __index = ZippedFile }
 
-local function zip(file)
+function mtzip.zip(file)
 	local self = {
 		headers = {},
 		file = file
@@ -14,8 +13,8 @@ end
 local function write_file(file, filename, data)
 	local offset = file:seek("end")
 	local compressed = false
-	local date, time = common.toDosTime(os.date("*t"))
-	local crc = crc32(data)
+	local date, time = mtzip.toDosTime(os.date("*t"))
+	local crc = mtzip.crc32(data)
 
 	local uncompressed_size = #data
 	if uncompressed_size > 10 then
@@ -25,7 +24,7 @@ local function write_file(file, filename, data)
 		data = string.sub(data, 3)
 	end
 	local compressed_size = #data
-	file:write(common.lfh_sig)
+	file:write(mtzip.lfh_sig)
 	file:write(string.char(0x0A, 0x00)) -- Version needed to extract (minimum)
 	file:write(string.char(0x00, 0x00)) -- General purpose bit flag
 
@@ -35,14 +34,14 @@ local function write_file(file, filename, data)
 		file:write(string.char(0x00, 0x00))
 	end
 
-	file:write(common.write_uint16(time)) --File last modification time
-	file:write(common.write_uint16(date)) --File last modification date
+	file:write(mtzip.write_uint16(time)) --File last modification time
+	file:write(mtzip.write_uint16(date)) --File last modification date
 
-	file:write(common.write_uint32(crc))
-	file:write(common.write_uint32(compressed_size))
-	file:write(common.write_uint32(uncompressed_size))
+	file:write(mtzip.write_uint32(crc))
+	file:write(mtzip.write_uint32(compressed_size))
+	file:write(mtzip.write_uint32(uncompressed_size))
 
-	file:write(common.write_uint16(#filename)) -- File name length (n)
+	file:write(mtzip.write_uint16(#filename)) -- File name length (n)
 	file:write(string.char(0x00, 0x00)) -- Extra field length (m)
 	file:write(filename)
 
@@ -61,7 +60,7 @@ local function write_file(file, filename, data)
 end
 
 local function write_cd(file, filename, header_data)
-	file:write(common.cd_sig)
+	file:write(mtzip.cd_sig)
 	file:write(string.char(0x00, 0x00)) -- Version made by
 	file:write(string.char(0x0A, 0x00)) -- Version needed to extract (minimum)
 	file:write(string.char(0x00, 0x00)) -- General purpose bit flag
@@ -72,33 +71,33 @@ local function write_cd(file, filename, header_data)
 		file:write(string.char(0x00, 0x00))
 	end
 
-	file:write(common.write_uint16(header_data.time)) --File last modification time
-	file:write(common.write_uint16(header_data.date)) --File last modification date
+	file:write(mtzip.write_uint16(header_data.time)) --File last modification time
+	file:write(mtzip.write_uint16(header_data.date)) --File last modification date
 
-	file:write(common.write_uint32(header_data.crc))
-	file:write(common.write_uint32(header_data.compressed_size))
-	file:write(common.write_uint32(header_data.uncompressed_size))
+	file:write(mtzip.write_uint32(header_data.crc))
+	file:write(mtzip.write_uint32(header_data.compressed_size))
+	file:write(mtzip.write_uint32(header_data.uncompressed_size))
 
-	file:write(common.write_uint16(#filename)) -- File name length (n)
+	file:write(mtzip.write_uint16(#filename)) -- File name length (n)
 	file:write(string.char(0x00, 0x00)) -- Extra field length (m)
 	file:write(string.char(0x00, 0x00)) -- File comment length (k)
 	file:write(string.char(0x00, 0x00)) -- Disk number where file starts
 	file:write(string.char(0x00, 0x00)) -- Internal file attributes
 	file:write(string.char(0x00, 0x00, 0x00, 0x00)) -- External file attributes
-	file:write(common.write_uint32(header_data.offset+0)) -- Relative offset of local file header
+	file:write(mtzip.write_uint32(header_data.offset+0)) -- Relative offset of local file header
 	file:write(filename)
 
 	return 46 + #filename
 end
 
 local function write_eocd(file, count, offset, cd_size)
-	file:write(common.eocd_sig)
+	file:write(mtzip.eocd_sig)
 	file:write(string.char(0x00, 0x00)) -- Number of this disk (or 0xffff for ZIP64)
 	file:write(string.char(0x00, 0x00)) -- Disk where central directory starts (or 0xffff for ZIP64)
-	file:write(common.write_uint16(count)) -- Number of central directory records on this disk (or 0xffff for ZIP64)
-	file:write(common.write_uint16(count)) -- Total number of central directory records (or 0xffff for ZIP64)
-	file:write(common.write_uint32(cd_size)) -- Size of central directory (bytes) (or 0xffffffff for ZIP64)
-	file:write(common.write_uint32(offset)) -- Offset of start of central directory
+	file:write(mtzip.write_uint16(count)) -- Number of central directory records on this disk (or 0xffff for ZIP64)
+	file:write(mtzip.write_uint16(count)) -- Total number of central directory records (or 0xffff for ZIP64)
+	file:write(mtzip.write_uint32(cd_size)) -- Size of central directory (bytes) (or 0xffffffff for ZIP64)
+	file:write(mtzip.write_uint32(offset)) -- Offset of start of central directory
 	file:write(string.char(0x00, 0x00)) -- Comment length (n)
 end
 
@@ -117,5 +116,3 @@ function ZippedFile:close()
 	end
 	write_eocd(self.file, count, offset, cd_size)
 end
-
-return zip

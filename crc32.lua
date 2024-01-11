@@ -97,7 +97,7 @@ local _crc_table3 = {
 -- @param init_value [nil/integer] The initial crc32 value. If nil, use 0
 -- @return [integer] The CRC-32 checksum, which is greater or equal to 0,
 -- and less than 2^32 (4294967296).
-return function(str, init_value)
+function mtzip.crc32(str, init_value)
 	-- TODO: Check argument
 	local crc = (init_value or 0) % 4294967296
 	if not _xor8_table then

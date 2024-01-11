@@ -19,8 +19,6 @@ Disclaimer:
 
 # Usage
 
-## Within a mod
-
 Writing:
 ```lua
 -- create a new zip file in the world directory
@@ -71,19 +69,6 @@ local list = z:list()
 for _, filename in ipairs(list) do
     print(filename)
 end
-```
-
-## Bootstrap
-
-The individual files or the whole directory can be embedded inside a mod as a submodule or plain folder
-In this case you can bootstrap the library with this code:
-
-```lua
-local MP = minetest.get_modpath("my_cool_mod_that_uses_zip_stuff")
--- the mod has a subfolder named "mtzip" that contains this mod's files
-local bootstrap = loadfile(MP.."/mtzip/bootstrap.lua")()
-local mtzip = bootstrap(MP)
--- do stuff with "mtzip.zip" or "mtzip.unzip"
 ```
 
 # Further reading
