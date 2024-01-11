@@ -11,14 +11,16 @@ function mtzip.zip(file)
 	return setmetatable(self, ZippedFile_mt)
 end
 
-local function write_file(file, filename, data)
+local function write_file(file, filename, data, opts)
+	opts = opts or {}
+
 	local offset = file:seek("end")
 	local compressed = false
 	local date, time = mtzip.toDosTime(os.date("*t"))
 	local crc = mtzip.crc32(data)
 
 	local uncompressed_size = #data
-	if uncompressed_size > 10 then
+	if not opts.disable_compression then
 		compressed = true
 		data = minetest.compress(data, "deflate", 9)
 		-- strip zlib header
@@ -102,8 +104,8 @@ local function write_eocd(file, count, offset, cd_size)
 	file:write(char(0x00, 0x00)) -- Comment length (n)
 end
 
-function ZippedFile:add(filename, data)
-	self.headers[filename] = write_file(self.file, filename, data)
+function ZippedFile:add(filename, data, opts)
+	self.headers[filename] = write_file(self.file, filename, data, opts)
 end
 
 function ZippedFile:close()

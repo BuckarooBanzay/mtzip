@@ -28,6 +28,9 @@ local z = mtzip.zip(f)
 -- add a sample file with dummy content
 z:add("test.txt", "test123")
 
+-- add a file and disable compression
+z:add("test.txt", "mycontent", { disable_compression = true })
+
 -- close and finalize the zip file
 z:close()
 -- close the file (flush pending changes)
