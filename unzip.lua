@@ -1,3 +1,4 @@
+local read_uint16, read_uint32, insert = mtzip.read_uint16, mtzip.read_uint32, table.insert
 
 -- Local file header
 local function read_local_file_header(data, offset)
@@ -5,12 +6,12 @@ local function read_local_file_header(data, offset)
 		return nil, "invalid local file header signature"
 	end
 
-	local name_len = mtzip.read_uint16(data, offset+26)
-	local extra_len = mtzip.read_uint16(data, offset+28)
+	local name_len = read_uint16(data, offset+26)
+	local extra_len = read_uint16(data, offset+28)
 
 	return {
 		header_len = 30+name_len+extra_len,
-		compression = mtzip.read_uint16(data, offset+8)
+		compression = read_uint16(data, offset+8)
 	}
 end
 
@@ -21,9 +22,9 @@ local function read_eocd(data, offset)
 	end
 
 	return {
-		cd_size = mtzip.read_uint32(data, offset+12),
-		cd_offset = mtzip.read_uint32(data, offset+16),
-		cd_count = mtzip.read_uint16(data, offset+8)
+		cd_size = read_uint32(data, offset+12),
+		cd_offset = read_uint32(data, offset+16),
+		cd_count = read_uint16(data, offset+8)
 	}
 end
 
@@ -33,21 +34,21 @@ local function read_cd(data, offset)
 		return nil, "invalid cd signature"
 	end
 
-	local time = mtzip.read_uint16(data, offset+12)
-	local date = mtzip.read_uint16(data, offset+14)
-	local name_len = mtzip.read_uint16(data, offset+28)
-	local extra_len = mtzip.read_uint16(data, offset+30)
-	local comment_len = mtzip.read_uint16(data, offset+32)
+	local time = read_uint16(data, offset+12)
+	local date = read_uint16(data, offset+14)
+	local name_len = read_uint16(data, offset+28)
+	local extra_len = read_uint16(data, offset+30)
+	local comment_len = read_uint16(data, offset+32)
 
 	return {
-		version = mtzip.read_uint16(data, offset+4),
-		version_needed = mtzip.read_uint16(data, offset+6),
-		compression = mtzip.read_uint16(data, offset+10),
+		version = read_uint16(data, offset+4),
+		version_needed = read_uint16(data, offset+6),
+		compression = read_uint16(data, offset+10),
 		mtime = mtzip.fromDosTime(date, time),
-		crc32 = mtzip.read_uint32(data, offset+16),
-		compressed_size = mtzip.read_uint32(data, offset+20),
-		uncompressed_size = mtzip.read_uint32(data, offset+24),
-		file_offset = mtzip.read_uint32(data, offset+42),
+		crc32 = read_uint32(data, offset+16),
+		compressed_size = read_uint32(data, offset+20),
+		uncompressed_size = read_uint32(data, offset+24),
+		file_offset = read_uint32(data, offset+42),
 		name = data:sub(offset+46+1, offset+46+name_len),
 		extra_len = extra_len,
 		comment_len = comment_len,
@@ -135,7 +136,7 @@ end
 function UnzippedFile:list()
 	local list = {}
 	for k in pairs(self.entries) do
-		table.insert(list, k)
+		insert(list, k)
 	end
 	return list
 end

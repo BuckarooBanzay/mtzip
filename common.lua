@@ -1,3 +1,4 @@
+local char, byte, floor = string.char, string.byte, math.floor
 
 function mtzip.compare_bytes(b1, o1, b2, o2, len)
 	for i=1,len do
@@ -11,7 +12,7 @@ end
 
 -- https://gist.github.com/mebens/938502
 local function rshift(x, by)
-	return math.floor(x / 2 ^ by)
+	return floor(x / 2 ^ by)
 end
 
 local function lshift(x, by)
@@ -20,17 +21,17 @@ end
 
 function mtzip.read_uint32(data, offset)
 	return (
-		string.byte(data,1+offset) +
-		lshift(string.byte(data,2+offset), 8) +
-		lshift(string.byte(data,3+offset), 16) +
-		lshift(string.byte(data,4+offset), 24)
+		byte(data,1+offset) +
+		lshift(byte(data,2+offset), 8) +
+		lshift(byte(data,3+offset), 16) +
+		lshift(byte(data,4+offset), 24)
 	)
 end
 
 function mtzip.read_uint16(data, offset)
 	return (
-		string.byte(data,1+offset) +
-		lshift(string.byte(data,2+offset), 8)
+		byte(data,1+offset) +
+		lshift(byte(data,2+offset), 8)
 	)
 end
 
@@ -43,8 +44,8 @@ local function bitand(a, b)
 		  result = result + bitval      -- set the current bit
 	  end
 	  bitval = bitval * 2 -- shift left
-	  a = math.floor(a/2) -- shift right
-	  b = math.floor(b/2)
+	  a = floor(a/2) -- shift right
+	  b = floor(b/2)
 	end
 	return result
 end
@@ -52,7 +53,7 @@ end
 function mtzip.write_uint16(v)
 	local b1 = bitand(v, 0xFF)
 	local b2 = bitand( rshift(v, 8), 0xFF )
-	return string.char(b1, b2)
+	return char(b1, b2)
 end
 
 function mtzip.write_uint32(v)
@@ -60,7 +61,7 @@ function mtzip.write_uint32(v)
 	local b2 = bitand( rshift(v, 8), 0xFF )
 	local b3 = bitand( rshift(v, 16), 0xFF )
 	local b4 = bitand( rshift(v, 24), 0xFF )
-	return string.char(b1, b2, b3, b4)
+	return char(b1, b2, b3, b4)
 end
 
 -- https://cs.opensource.google/go/go/+/master:src/archive/zip/struct.go;l=222-246;drc=master
@@ -83,9 +84,9 @@ function mtzip.toDosTime(o)
 end
 
 -- signatures / headers
-mtzip.lfh_sig = string.char(80, 75, 3, 4)
-mtzip.eocd_sig = string.char(80, 75, 5, 6)
-mtzip.cd_sig = string.char(80, 75, 1, 2)
-mtzip.zlib_header = string.char(0x78, 0xDA)
+mtzip.lfh_sig = char(80, 75, 3, 4)
+mtzip.eocd_sig = char(80, 75, 5, 6)
+mtzip.cd_sig = char(80, 75, 1, 2)
+mtzip.zlib_header = char(0x78, 0xDA)
 mtzip.compression_flag_deflate = 8
 mtzip.compression_flag_none = 0
