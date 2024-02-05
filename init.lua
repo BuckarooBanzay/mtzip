@@ -1,6 +1,8 @@
 local MP = minetest.get_modpath(minetest.get_current_modname())
 
-mtzip = {}
+mtzip = {
+    api_version = 1
+}
 
 dofile(MP.."/common.lua")
 dofile(MP.."/crc32.lua")
