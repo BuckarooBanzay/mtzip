@@ -16,4 +16,7 @@ end
 
 if minetest.get_modpath("mtt") then
     dofile(MP .. "/mtt.lua")
+    if minetest.register_mapgen_script then
+        minetest.register_mapgen_script(MP .. "/mtt.async.lua")
+    end
 end
