@@ -14,7 +14,7 @@ for _, filename in ipairs(includes) do
     end
 end
 
-if core.get_modpath("mtt") then
+if core.get_modpath("mtt") and mtt.enabled then
     dofile(MP .. "/mtt.lua")
     if core.register_mapgen_script then
         core.register_mapgen_script(MP .. "/mtt.async.lua")
