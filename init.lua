@@ -1,4 +1,4 @@
-local MP = minetest.get_modpath(minetest.get_current_modname())
+local MP = core.get_modpath(core.get_current_modname())
 
 local includes = {
     "common.lua",
@@ -9,14 +9,14 @@ local includes = {
 
 for _, filename in ipairs(includes) do
     dofile(MP .. "/" .. filename)
-    if minetest.register_mapgen_script then
-        minetest.register_mapgen_script(MP .. "/" .. filename)
+    if core.register_mapgen_script then
+        core.register_mapgen_script(MP .. "/" .. filename)
     end
 end
 
-if minetest.get_modpath("mtt") then
+if core.get_modpath("mtt") then
     dofile(MP .. "/mtt.lua")
-    if minetest.register_mapgen_script then
-        minetest.register_mapgen_script(MP .. "/mtt.async.lua")
+    if core.register_mapgen_script then
+        core.register_mapgen_script(MP .. "/mtt.async.lua")
     end
 end

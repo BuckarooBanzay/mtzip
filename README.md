@@ -1,14 +1,14 @@
 
-zip-library for minetest
+zip-library for luanti
 
 ![](https://github.com/BuckarooBanzay/mtzip/workflows/luacheck/badge.svg)
 ![](https://github.com/BuckarooBanzay/mtzip/workflows/test/badge.svg)
 [![License](https://img.shields.io/badge/License-MIT%20and%20CC%20BY--SA%203.0-green.svg)](license.txt)
-[![Download](https://img.shields.io/badge/Download-ContentDB-blue.svg)](https://content.minetest.net/packages/BuckarooBanzay/mtzip)
+[![Download](https://img.shields.io/badge/Download-ContentDB-blue.svg)](https://content.luanti.org/packages/BuckarooBanzay/mtzip)
 
 # Overview
 
-Lets you use zip files from within a minetest mod (both reading and writing)
+Lets you use zip files from within a luanti mod (both reading and writing)
 
 Supported versions:
 * Does not currently support zip64 stuff, only the basics
@@ -21,7 +21,7 @@ Disclaimer:
 Writing:
 ```lua
 -- create a new zip file in the world directory
-local f = io.open(minetest.get_worldpath() .. "/tmp.zip", "wb")
+local f = io.open(core.get_worldpath() .. "/tmp.zip", "wb")
 local z = mtzip.zip(f)
 
 -- add a sample file with dummy content
@@ -39,7 +39,7 @@ f:close()
 Reading:
 ```lua
 -- open a file in the world directory (can also be somewhere in the mod itself)
-local f = io.open(minetest.get_worldpath() .. "/tmp.zip", "rb")
+local f = io.open(core.get_worldpath() .. "/tmp.zip", "rb")
 local z, err_msg = mtzip.unzip(f)
 if not z then
     -- error-handling

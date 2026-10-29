@@ -22,7 +22,7 @@ local function write_file(file, filename, data, opts)
 	local uncompressed_size = #data
 	if not opts.disable_compression then
 		compressed = true
-		data = minetest.compress(data, "deflate", 9)
+		data = core.compress(data, "deflate", 9)
 		-- strip zlib header
 		data = string.sub(data, 3)
 	end

@@ -118,7 +118,7 @@ function UnzippedFile:get(filename, verify)
 	local data = self.file:read(cd.compressed_size)
 
 	if header.compression == mtzip.compression_flag_deflate then
-		data = minetest.decompress(mtzip.zlib_header .. data, "deflate")
+		data = core.decompress(mtzip.zlib_header .. data, "deflate")
 	elseif header.compression ~= mtzip.compression_flag_none then
 		return nil, "unsupported compression type: " .. header.compression
 	end
