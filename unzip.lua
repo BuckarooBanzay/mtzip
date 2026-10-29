@@ -56,6 +56,28 @@ local function read_cd(data, offset)
 	}
 end
 
+-- searches backwards for the eocd record, returns its data or nil, err
+local function find_eocd(file)
+	local size = file:seek("end")
+	if not size or size < mtzip.eocd_min_size then
+		return nil, "file too small to be a zip archive"
+	end
+
+	local tail_len = math.min(size, mtzip.eocd_min_size + mtzip.eocd_max_comment)
+	file:seek("set", size - tail_len)
+	local tail = file:read(tail_len)
+	if not tail then
+		return nil, "could not read end of file"
+	end
+
+	for pos = #tail - mtzip.eocd_min_size, 0, -1 do
+		if mtzip.compare_bytes(tail, pos, mtzip.eocd_sig, 0, 4) then
+			return tail:sub(pos+1, pos+mtzip.eocd_min_size)
+		end
+	end
+	return nil, "invalid eocd signature"
+end
+
 local UnzippedFile = {}
 local UnzippedFile_mt = { __index = UnzippedFile }
 
@@ -63,18 +85,25 @@ function mtzip.unzip(file)
 	if not file then
 		return nil, "file is nil"
 	end
-	local size = file:seek("end")
-	file:seek("set", size - 22) -- expects the comment-length to be 0
-	local data = file:read(22)
+	local data, find_err_msg = find_eocd(file)
+	if not data then
+		return nil, find_err_msg
+	end
 	-- read eocd
 	local eocd, err_msg = read_eocd(data, 0)
 	if not eocd then
 		return nil, err_msg
 	end
+	if eocd.cd_count == mtzip.max_uint16 or eocd.cd_size == mtzip.max_uint32 or eocd.cd_offset == mtzip.max_uint32 then
+		return nil, "zip64 is not supported"
+	end
 
 	-- read cd
 	file:seek("set", eocd.cd_offset)
 	data = file:read(eocd.cd_size)
+	if not data or #data ~= eocd.cd_size then
+		return nil, "could not read central directory"
+	end
 
 	-- filename -> cd
 	local entries = {}
@@ -82,9 +111,16 @@ function mtzip.unzip(file)
 	-- read all entries from the cd
 	local offset = 0
 	for _=1,eocd.cd_count do
+		if offset + 46 > #data then
+			return nil, "central directory truncated"
+		end
 		local cd, cd_err_msg = read_cd(data, offset)
 		if not cd then
 			return nil, cd_err_msg
+		end
+		if cd.compressed_size == mtzip.max_uint32 or cd.uncompressed_size == mtzip.max_uint32
+			or cd.file_offset == mtzip.max_uint32 then
+			return nil, "zip64 is not supported: '" .. cd.name .. "'"
 		end
 		entries[cd.name] = cd
 		offset = offset + cd.header_len
@@ -109,16 +145,30 @@ function UnzippedFile:get(filename, verify)
 
 	self.file:seek("set", cd.file_offset)
 	local header_data = self.file:read(30)
+	if not header_data or #header_data < 30 then
+		return nil, "could not read local file header"
+	end
 	local header, err_msg = read_local_file_header(header_data, 0)
 	if not header then
 		return nil, err_msg
 	end
 
-	self.file:seek("set", cd.file_offset+header.header_len)
-	local data = self.file:read(cd.compressed_size)
+	local data = ""
+	if cd.compressed_size > 0 then
+		self.file:seek("set", cd.file_offset+header.header_len)
+		data = self.file:read(cd.compressed_size)
+		if not data or #data ~= cd.compressed_size then
+			return nil, "could not read file data: '" .. filename .. "'"
+		end
+	end
 
 	if header.compression == mtzip.compression_flag_deflate then
-		data = core.decompress(mtzip.zlib_header .. data, "deflate")
+		if cd.compressed_size > 0 then
+			data = core.decompress(mtzip.zlib_header .. data, "deflate")
+			if not data then
+				return nil, "decompression failed: '" .. filename .. "'"
+			end
+		end
 	elseif header.compression ~= mtzip.compression_flag_none then
 		return nil, "unsupported compression type: " .. header.compression
 	end
@@ -138,5 +188,6 @@ function UnzippedFile:list()
 	for k in pairs(self.entries) do
 		insert(list, k)
 	end
+	table.sort(list)
 	return list
 end

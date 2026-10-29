@@ -81,8 +81,11 @@ function mtzip.fromDosTime(date, time)
 end
 
 function mtzip.toDosTime(o)
-	local date = o.day + lshift(o.month, 5) + lshift(o.year - 1980, 9)
-	local time = (o.sec / 2) + lshift(o.min, 5) + lshift(o.hour, 11)
+	-- the dos format can't represent years before 1980 or leap seconds
+	local year = math.max(o.year, 1980)
+	local sec = math.min(o.sec, 59)
+	local date = o.day + lshift(o.month, 5) + lshift(year - 1980, 9)
+	local time = floor(sec / 2) + lshift(o.min, 5) + lshift(o.hour, 11)
 
 	return date, time
 end
@@ -94,3 +97,9 @@ mtzip.cd_sig = char(80, 75, 1, 2)
 mtzip.zlib_header = char(0x78, 0xDA)
 mtzip.compression_flag_deflate = 8
 mtzip.compression_flag_none = 0
+
+-- limits of the non-zip64 format
+mtzip.max_uint16 = 0xFFFF
+mtzip.max_uint32 = 0xFFFFFFFF
+mtzip.eocd_min_size = 22
+mtzip.eocd_max_comment = 0xFFFF
